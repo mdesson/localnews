@@ -12,7 +12,7 @@ import (
 
 type App struct {
 	l           *slog.Logger
-	Sources     []source.Source
+	Sources     []*source.Source
 	LastUpdated time.Time
 }
 
@@ -55,7 +55,7 @@ func NewApp(sourcesFile string) (*App, error) {
 		return nil, err
 	}
 
-	sources := make([]source.Source, 0)
+	sources := make([]*source.Source, 0)
 	if err := json.Unmarshal(sourcesBytes, &sources); err != nil {
 		return nil, err
 	}
