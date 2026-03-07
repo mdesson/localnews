@@ -4,36 +4,50 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
+    <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css">
-    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.colors.min.css">
+    <link rel="stylesheet" href="/static/style.css" />
+    <script>
+        const m = document.cookie.match(/theme=(\w+)/);
+        if (m && m[1] !== "auto") {
+            document.documentElement.setAttribute("data-theme", m[1]);
+        }
+    </script>
+    <title>{{.Strings.Title}}</title>
 </head>
 <body>
 <main class="container">
-    <header>
-        <h1>{{ .Title}}</h1>
-        <nav>
-            <ul>
-                <li>{{ .Subheader }}</li>
-            </ul>
-            <ul>
-                <li>
-                    <select aria-label="Theme" id="theme-switcher">
-                        <option value="light" selected>Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="auto">Auto</option>
-                    </select>
-                </li>
-            </ul>
-        </nav>
+    <header style="display: flex; align-items: stretch; gap: 1rem;">
+        <img src="/static/logo.svg" alt="Logo" style="height: 100%; width: auto;">
+        <div style="flex: 1;">
+            <h1 class="pico-color-jade-550" style="margin: 0;">{{ .Strings.Title }}</h1>
+            <nav>
+                <ul>
+                    <li>{{ .Strings.Subtitle }}</li>
+                </ul>
+                <ul>
+                    <li>
+                        <select aria-label="Theme" id="theme-switcher">
+                            <option value="light" selected>{{ $.Strings.ThemeLight }}</option>
+                            <option value="dark">{{ $.Strings.ThemeDark }}</option>
+                            <option value="auto">{{ $.Strings.ThemeAuto }}</option>
+                        </select>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </header>
     {{ range .Source.Articles }}
     <article>
-        <hgroup>
-            <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
-            <p>{{ $.Source.Name }}</p>
-        </hgroup>
         <div class="grid">
-            <p>{{ .Description | safe }}</p>
+            <div>
+                <hgroup>
+                    <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
+                    <p>{{ $.Source.Name }}</p>
+                </hgroup>
+                <p>{{ .Description | safe }}</p>
+            </div>
             {{ if .Image }}
             <img src="{{ .Image.URL }}" alt="{{ .Image.Title }}" />
             {{ end }}
@@ -47,13 +61,30 @@
     {{ end }}
 </main>
 <script>
-    document.getElementById("theme-switcher").addEventListener("change", (e) => {
-        const theme = e.target.value;
+    // Set cookie
+    function setTheme(theme) {
         if (theme === "auto") {
             document.documentElement.removeAttribute("data-theme");
         } else {
             document.documentElement.setAttribute("data-theme", theme);
         }
+        document.cookie = `theme=${theme};path=/;max-age=31536000`; // 1 year
+    }
+
+    // Read cookie
+    function getTheme() {
+        const match = document.cookie.match(/theme=(\w+)/);
+        return match ? match[1] : "light";
+    }
+
+    // Apply on page load
+    const saved = getTheme();
+    setTheme(saved);
+    document.getElementById("theme-switcher").value = saved;
+
+    // Listen for changes
+    document.getElementById("theme-switcher").addEventListener("change", (e) => {
+        setTheme(e.target.value);
     });
 </script>
 </body>

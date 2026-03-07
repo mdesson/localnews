@@ -44,8 +44,11 @@ func (a *App) Start() {
 		}
 	}()
 
-	// start web server
+	// config web server
 	http.HandleFunc("/", a.handleIndex)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// start web server
 	a.l.Info("starting server", "port", PORT)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", PORT), nil); err != nil {
 		a.l.Error("server failed", "error", err)
