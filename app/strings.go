@@ -26,6 +26,18 @@ var STRINGS = map[string]Translation{
 		English: "Auto",
 		French:  "Auto",
 	},
+	"LanguageEnglish": {
+		English: "English",
+		French:  "English",
+	},
+	"LanguageFrench": {
+		English: "Français",
+		French:  "Français",
+	},
+	"LanguageBilingual": {
+		English: "Les Deux",
+		French:  "Les Deux",
+	},
 }
 
 type Translation struct {
@@ -41,8 +53,8 @@ func translations(r *http.Request) map[string]string {
 		}
 	} else {
 		accept := r.Header.Get("Accept-Language")
-		if strings.Contains(accept, "fr") {
-			inputLang = "fr"
+		if strings.Contains(accept, "en") {
+			inputLang = "en"
 		}
 	}
 

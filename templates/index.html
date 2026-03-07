@@ -8,12 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.colors.min.css">
     <link rel="stylesheet" href="/static/style.css" />
-    <script>
-        const m = document.cookie.match(/theme=(\w+)/);
-        if (m && m[1] !== "auto") {
-            document.documentElement.setAttribute("data-theme", m[1]);
-        }
-    </script>
+    <script src="/static/header.js"></script>
     <title>{{.Strings.Title}}</title>
 </head>
 <body>
@@ -27,6 +22,13 @@
                     <li>{{ .Strings.Subtitle }}</li>
                 </ul>
                 <ul>
+                    <li>
+                        <select aria-label="language" id="language-switcher">
+                            <option value="fr" {{if eq .Lang "fr"}}selected{{end}}>{{ $.Strings.LanguageFrench }}</option>
+                            <option value="en" {{if eq .Lang "en"}}selected{{end}}>{{ $.Strings.LanguageEnglish }}</option>
+                            <option value="bi" {{if eq .Lang "bi"}}selected{{end}}>{{ $.Strings.LanguageBilingual }}</option>
+                        </select>
+                    </li>
                     <li>
                         <select aria-label="Theme" id="theme-switcher">
                             <option value="light" selected>{{ $.Strings.ThemeLight }}</option>
@@ -44,7 +46,7 @@
             <div>
                 <hgroup>
                     <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
-                    <p>{{ $.Source.Name }}</p>
+                    <p><a href="{{ $.Source.URL }}" class="plain">{{ $.Source.Name }}</a></p>
                 </hgroup>
                 <p>{{ .Description | safe }}</p>
             </div>
@@ -60,32 +62,6 @@
     </article>
     {{ end }}
 </main>
-<script>
-    // Set cookie
-    function setTheme(theme) {
-        if (theme === "auto") {
-            document.documentElement.removeAttribute("data-theme");
-        } else {
-            document.documentElement.setAttribute("data-theme", theme);
-        }
-        document.cookie = `theme=${theme};path=/;max-age=31536000`; // 1 year
-    }
-
-    // Read cookie
-    function getTheme() {
-        const match = document.cookie.match(/theme=(\w+)/);
-        return match ? match[1] : "light";
-    }
-
-    // Apply on page load
-    const saved = getTheme();
-    setTheme(saved);
-    document.getElementById("theme-switcher").value = saved;
-
-    // Listen for changes
-    document.getElementById("theme-switcher").addEventListener("change", (e) => {
-        setTheme(e.target.value);
-    });
-</script>
+<script src="/static/body.js"></script>
 </body>
 </html>
