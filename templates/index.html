@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css">
+    <title>{{.Title}}</title>
+</head>
+<body>
+<main class="container">
+    <header>
+        <h1>{{ .Title}}</h1>
+        <nav>
+            <ul>
+                <li>{{ .Subheader }}</li>
+            </ul>
+            <ul>
+                <li>
+                    <select aria-label="Theme" id="theme-switcher">
+                        <option value="light" selected>Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    {{ range .Source.Articles }}
+    <article>
+        <hgroup>
+            <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
+            <p>{{ $.Source.Name }}</p>
+        </hgroup>
+        <div class="grid">
+            <p>{{ .Description | safe }}</p>
+            {{ if .Image }}
+            <img src="{{ .Image.URL }}" alt="{{ .Image.Title }}" />
+            {{ end }}
+        </div>
+        {{ if .Published }}
+        <footer>
+            <small>{{ .Published }}</small>
+        </footer>
+        {{ end }}
+    </article>
+    {{ end }}
+</main>
+<script>
+    document.getElementById("theme-switcher").addEventListener("change", (e) => {
+        const theme = e.target.value;
+        if (theme === "auto") {
+            document.documentElement.removeAttribute("data-theme");
+        } else {
+            document.documentElement.setAttribute("data-theme", theme);
+        }
+    });
+</script>
+</body>
+</html>

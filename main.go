@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/mdesson/localnews/app"
 )
 
@@ -15,5 +13,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(a.Sources)
+	a.Start()
 }

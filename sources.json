@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Néomedia Vaudreuil-Soulanges",
+    "url": "https://www.neomedia.com/vaudreuil-soulanges",
+    "feed_url": "https://www.neomedia.com/vaudreuil-soulanges/Rss/RssFeed",
+    "language": 3
+  },
+  {
+    "name": "INFOSuroit",
+    "url": "https://www.infosuroit.com",
+    "feed_url": "https://www.infosuroit.com/feed/",
+    "language": 2
+  },
+  {
+    "name": "Le Journal Saint-François",
+    "url": "https://journalsaint-francois.ca",
+    "feed_url": "https://journalsaint-francois.ca/feed/",
+    "language": 2
+  },
+  {
+    "name": "The 1019 Report",
+    "url": "https://the1019report.ca",
+    "feed_url": "https://the1019report.ca/feed/",
+    "language": 1
+  },
+  {
+    "name": "The Review",
+    "url": "https://thereview.ca",
+    "feed_url": "https://thereview.ca/feed/",
+    "language": 1
+  },
+  {
+    "name": "CSUR la télé",
+    "url": "https://csur.tv",
+    "feed_url": "https://www.youtube.com/feeds/videos.xml?user=csurlatele",
+    "language": 2
+  },
+  {
+    "name": "CBC Montreal",
+    "url": "https://www.cbc.ca/news/canada/montreal",
+    "feed_url": "https://www.cbc.ca/webfeed/rss/rss-canada-montreal",
+    "language": 1
+  },
+  {
+    "name": "Radio-Canada Grand Montréal",
+    "url": "https://ici.radio-canada.ca/nouvelle/grand-montreal",
+    "feed_url": "https://ici.radio-canada.ca/info/rss/grandmontreal/en-continu",
+    "language": 2
+  },
+  {
+    "name": "La Voix Régionale Vaudreuil-Soulanges",
+    "url": "https://www.viva-media.ca/la-voix-regionale_vaudreuil-soulanges/",
+    "feed_url": "",
+    "language": 2
+  },
+  {
+    "name": "Your Local Journal",
+    "url": "https://www.yourlocaljournal.ca",
+    "feed_url": "",
+    "language": 1
+  },
+  {
+    "name": "CKVD-FM 100.1",
+    "url": "https://ckvdfm.com",
+    "feed_url": "",
+    "language": 2
+  },
+  {
+    "name": "Ville de Vaudreuil-Dorion",
+    "url": "https://www.ville.vaudreuil-dorion.qc.ca",
+    "feed_url": "",
+    "language": 3
+  },
+  {
+    "name": "MRC de Vaudreuil-Soulanges",
+    "url": "https://mrcvs.ca",
+    "feed_url": "",
+    "language": 3
+  },
+  {
+    "name": "Town of Hudson",
+    "url": "https://hudson.quebec",
+    "feed_url": "",
+    "language": 3
+  }
+]
