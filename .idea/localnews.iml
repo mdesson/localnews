@@ -6,5 +6,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@picocss/pico" level="application" />
+    <orderEntry type="library" name="htmx.org" level="application" />
   </component>
 </module>

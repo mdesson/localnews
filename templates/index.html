@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.colors.min.css">
     <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
     <script src="/static/header.js"></script>
     <title>{{.Strings.Title}}</title>
 </head>
@@ -40,27 +41,37 @@
             </nav>
         </div>
     </header>
-    {{ range .Source.Articles }}
-    <article>
+    <details name="sources">
+        <summary role="button" class="outline">{{ .Strings.ChooseSources }}</summary>
         <div class="grid">
             <div>
-                <hgroup>
-                    <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
-                    <p><a href="{{ $.Source.URL }}" class="plain">{{ $.Source.Name }}</a></p>
-                </hgroup>
-                <p>{{ .Description | safe }}</p>
+                <h6>{{ .Strings.LanguageFrench }}</h6>
+                {{ range .Sources }}
+                    {{if .Language | isFrench}}
+                    <label>
+                        <input type="checkbox" name="source" value="{{.ID}}">
+                        {{ .Name }}
+                        {{ if isBilingual .Language }} ({{ $.Strings.LanguageFrench }}){{ end }}
+                    </label>
+                    {{end}}
+                {{ end }}
             </div>
-            {{ if .Image }}
-            <img src="{{ .Image.URL }}" alt="{{ .Image.Title }}" />
-            {{ end }}
+            <div>
+                <h6>{{ .Strings.LanguageEnglish }}</h6>
+                {{ range .Sources }}
+                    {{if .Language | isEnglish}}
+                    <label>
+                        <input type="checkbox" name="source" value="{{.ID}}">
+                        {{ .Name }}
+                        {{ if isBilingual .Language }} ({{ $.Strings.LanguageEnglish }}){{ end }}
+                    </label>
+                    {{end}}
+                {{ end }}
+            </div>
         </div>
-        {{ if .Published }}
-        <footer>
-            <small>{{ .Published }}</small>
-        </footer>
-        {{ end }}
-    </article>
-    {{ end }}
+        <p>{{ .Strings.ChoicesSaved }}</p>
+    </details>
+    <div id="articles" hx-trigger="load" hx-get="/articles" hx-swap="innerHTML"></div>
 </main>
 <script src="/static/body.js"></script>
 </body>

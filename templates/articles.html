@@ -1,0 +1,21 @@
+{{ range .Source.Articles }}
+<article>
+    <div class="grid">
+        <div>
+            <hgroup>
+                <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
+                <p><a href="{{ $.Source.URL }}" class="plain">{{ $.Source.Name }}</a></p>
+            </hgroup>
+            <p>{{ .Description | safe }}</p>
+        </div>
+        {{ if .Image }}
+        <img src="{{ .Image.URL }}" alt="{{ .Image.Title }}" />
+        {{ end }}
+    </div>
+    {{ if .Published }}
+    <footer>
+        <small>{{ .Published }}</small>
+    </footer>
+    {{ end }}
+</article>
+{{ end }}

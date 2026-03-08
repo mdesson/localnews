@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// STRINGS holds all localized text in the application.
 var STRINGS = map[string]Translation{
 	"Title": {
 		English: "Vaudreuil-Soulanges News",
@@ -38,13 +39,23 @@ var STRINGS = map[string]Translation{
 		English: "Les Deux",
 		French:  "Les Deux",
 	},
+	"ChooseSources": {
+		English: "Choose your sources",
+		French:  "Choisissez vos sources",
+	},
+	"ChoicesSaved": {
+		English: "Your choices will be saved for your next visit.",
+		French:  "Vos choix seront enregistrés pour votre prochaine visite.",
+	},
 }
 
+// Translation contains equivalent text in English and French.
 type Translation struct {
 	English string
 	French  string
 }
 
+// translations is a helper that gets the translations for the given language
 func translations(r *http.Request) map[string]string {
 	inputLang := "fr"
 	if c, err := r.Cookie("lang"); err == nil {

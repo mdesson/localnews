@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mdesson/localnews/source"
+	"github.com/pemistahl/lingua-go"
 )
 
 const (
@@ -18,12 +19,14 @@ const (
 )
 
 type App struct {
-	l           *slog.Logger
-	Sources     []*source.Source
-	LastUpdated time.Time
-	templates   *template.Template
+	l                *slog.Logger
+	Sources          []*source.Source
+	LastUpdated      time.Time
+	templates        *template.Template
+	languageDetector lingua.LanguageDetector
 }
 
+// Start kicks off a background process that refreshes the article list every minute and starts the web server.
 func (a *App) Start() {
 	// update news every minute
 	ticker := time.NewTicker(time.Minute)
@@ -46,6 +49,7 @@ func (a *App) Start() {
 
 	// config web server
 	http.HandleFunc("/", a.handleIndex)
+	http.HandleFunc("/articles", a.handleArticles)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	// start web server
@@ -68,7 +72,7 @@ func (a *App) Update() {
 		go func() {
 			wg.Add(1)
 			defer wg.Done()
-			if err := s.FetchArticles(); err != nil {
+			if err := s.FetchArticles(a.languageDetector); err != nil {
 				a.l.Error("error updating source", "source", s.Name, "error", err.Error())
 			} else {
 				a.l.Info("updated source", "source", s.Name)
@@ -106,13 +110,25 @@ func NewApp(sourcesFile string) (*App, error) {
 		"safe": func(s string) template.HTML {
 			return template.HTML(s)
 		},
+		"isEnglish": func(language source.Language) bool {
+			return (language & source.LanguageEnglish) != 0
+		},
+		"isFrench": func(language source.Language) bool {
+			return (language & source.LanguageFrench) != 0
+		},
+		"isBilingual": func(language source.Language) bool {
+			return language == (source.LanguageFrench | source.LanguageEnglish)
+		},
 	}
 
 	templates := template.Must(
 		template.New("").Funcs(funcMap).ParseGlob("templates/*.html"),
 	)
+	// init language detector
+	detector := lingua.NewLanguageDetectorBuilder().FromLanguages(lingua.English, lingua.French).WithPreloadedLanguageModels().Build()
+
 	// initialize app and update sources
-	app := &App{Sources: sources, l: logger, templates: templates}
+	app := &App{Sources: sources, l: logger, templates: templates, languageDetector: detector}
 	app.l.Info("starting update")
 	app.Update()
 	app.l.Info("finished update")
