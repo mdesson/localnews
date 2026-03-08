@@ -25,6 +25,7 @@ func (a *App) handleArticles(w http.ResponseWriter, r *http.Request) {
 	var articles []source.Article
 	for _, s := range a.Sources {
 		for _, article := range s.Articles {
+			// TODO: This conditional will remove stuff that might be customer selected
 			if userLanguage == article.Language {
 				articles = append(articles, article)
 			}
