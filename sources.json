@@ -77,18 +77,21 @@
     "language": 2
   },
   {
+    "id": "ville-vd",
     "name": "Ville de Vaudreuil-Dorion",
     "url": "https://www.ville.vaudreuil-dorion.qc.ca",
     "feed_url": "",
     "language": 3
   },
   {
+    "id": "mrc-vs",
     "name": "MRC de Vaudreuil-Soulanges",
     "url": "https://mrcvs.ca",
     "feed_url": "",
     "language": 3
   },
   {
+    "id": "hudson",
     "name": "Town of Hudson",
     "url": "https://hudson.quebec",
     "feed_url": "",

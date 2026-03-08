@@ -38,6 +38,6 @@ document.querySelectorAll('input[name="source"]').forEach(el => {
             .map(cb => cb.value)
             .join(",");
         document.cookie = `sources=${checked};path=/;max-age=31536000`;
-        htmx.trigger("#articles", "load");
+        htmx.trigger(document.getElementById("articles"), "refreshArticles");
     });
 });

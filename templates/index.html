@@ -50,7 +50,7 @@
                 {{ range .Sources }}
                     {{if .Language | isFrench}}
                     <label>
-                        <input type="checkbox" name="source" value="{{.ID}}:fr" {{ if isSelected .ID $.Selected }}checked{{ end }}>
+                        <input type="checkbox" name="source" value="{{.ID}}:fr" {{ if isSelected (printf "%s:fr" .ID) $.Selected }}checked{{ end }}>
                         {{ .Name }}
                         {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageFrench }})</span>{{ end }}
                     </label>
@@ -62,7 +62,7 @@
                 {{ range .Sources }}
                     {{if .Language | isEnglish}}
                     <label>
-                        <input type="checkbox" name="source" value="{{.ID}}:en" {{ if isSelected .ID $.Selected }}checked{{ end }}>
+                        <input type="checkbox" name="source" value="{{.ID}}:en" {{ if isSelected (printf "%s:en" .ID) $.Selected }}checked{{ end }}>
                         {{ .Name }}
                         {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageEnglish }})</span>{{ end }}
                     </label>
@@ -71,7 +71,7 @@
             </div>
         </div>
     </details>
-    <div id="articles" hx-trigger="load" hx-get="/articles" hx-swap="innerHTML"></div>
+    <div id="articles" hx-trigger="load, refreshArticles" hx-get="/articles" hx-swap="innerHTML"></div>
 </main>
 <script src="/static/body.js"></script>
 </body>
