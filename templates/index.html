@@ -43,6 +43,7 @@
     </header>
     <details name="sources">
         <summary role="button" class="outline">{{ .Strings.ChooseSources }}</summary>
+        <p class="muted">{{ .Strings.ChoicesSaved }}</p>
         <div class="grid">
             <div>
                 <h6>{{ .Strings.LanguageFrench }}</h6>
@@ -51,7 +52,7 @@
                     <label>
                         <input type="checkbox" name="source" value="{{.ID}}">
                         {{ .Name }}
-                        {{ if isBilingual .Language }} ({{ $.Strings.LanguageFrench }}){{ end }}
+                        {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageFrench }})</span>{{ end }}
                     </label>
                     {{end}}
                 {{ end }}
@@ -63,13 +64,12 @@
                     <label>
                         <input type="checkbox" name="source" value="{{.ID}}">
                         {{ .Name }}
-                        {{ if isBilingual .Language }} ({{ $.Strings.LanguageEnglish }}){{ end }}
+                        {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageEnglish }})</span>{{ end }}
                     </label>
                     {{end}}
                 {{ end }}
             </div>
         </div>
-        <p>{{ .Strings.ChoicesSaved }}</p>
     </details>
     <div id="articles" hx-trigger="load" hx-get="/articles" hx-swap="innerHTML"></div>
 </main>

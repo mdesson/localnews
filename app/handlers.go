@@ -1,6 +1,10 @@
 package app
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/mdesson/localnews/source"
+)
 
 func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 	data := map[string]any{
@@ -14,8 +18,23 @@ func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) handleArticles(w http.ResponseWriter, r *http.Request) {
+	// get user language
+	userLanguage := source.UserLanguage(r)
+
+	// get all relevant articles
+	var articles []source.Article
+	for _, s := range a.Sources {
+		for _, article := range s.Articles {
+			if userLanguage == article.Language {
+				articles = append(articles, article)
+			}
+		}
+	}
+
+	// TODO: sort by date. go into debugger and see what's set on the gofeed item for each source in a.Sources
+
 	data := map[string]any{
-		"Source": a.Sources[0], // TODO: multi source support
+		"Articles": articles,
 	}
 
 	if err := a.templates.ExecuteTemplate(w, "articles.html", data); err != nil {

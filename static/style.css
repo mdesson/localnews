@@ -10,6 +10,11 @@ article img {
     margin-left: auto;
 }
 
+.muted {
+    color: var(--pico-secondary);
+    font-size: 0.85em;
+}
+
 @media (max-width: 768px) {
     article img {
         margin-left: 0;

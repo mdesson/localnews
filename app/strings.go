@@ -2,7 +2,8 @@ package app
 
 import (
 	"net/http"
-	"strings"
+
+	"github.com/mdesson/localnews/source"
 )
 
 // STRINGS holds all localized text in the application.
@@ -57,22 +58,12 @@ type Translation struct {
 
 // translations is a helper that gets the translations for the given language
 func translations(r *http.Request) map[string]string {
-	inputLang := "fr"
-	if c, err := r.Cookie("lang"); err == nil {
-		if c.Value == "en" {
-			inputLang = c.Value
-		}
-	} else {
-		accept := r.Header.Get("Accept-Language")
-		if strings.Contains(accept, "en") {
-			inputLang = "en"
-		}
-	}
+	language := source.UserLanguage(r)
 
 	translatedStrings := map[string]string{}
 
 	for name, translation := range STRINGS {
-		if inputLang == "en" {
+		if language == source.LanguageEnglish {
 			translatedStrings[name] = translation.English
 		} else {
 			translatedStrings[name] = translation.French

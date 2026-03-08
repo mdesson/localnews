@@ -3,6 +3,8 @@ package source
 import (
 	"context"
 	"errors"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -66,4 +68,31 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 type Article struct {
 	gofeed.Item
 	Language Language
+}
+
+// UserLanguage extracts the user's language from an HTTP request.
+//
+// Note that bilingualism is a possible outcome of this operation.
+func UserLanguage(r *http.Request) Language {
+	inputLang := "fr"
+	if c, err := r.Cookie("lang"); err == nil {
+		if c.Value == "en" {
+			inputLang = c.Value
+		} else if c.Value == "bi" {
+			inputLang = c.Value
+		}
+	} else {
+		accept := r.Header.Get("Accept-Language")
+		if strings.Contains(accept, "en") {
+			inputLang = "en"
+		}
+	}
+
+	if inputLang == "en" {
+		return LanguageEnglish
+	} else if inputLang == "bi" {
+		return LanguageFrench & LanguageEnglish
+	}
+
+	return LanguageFrench
 }
