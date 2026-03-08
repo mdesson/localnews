@@ -2,14 +2,28 @@ package app
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/mdesson/localnews/source"
 )
 
 func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
+	var selected []string
+	if c, err := r.Cookie("sources"); err == nil {
+		selected = strings.Split(c.Value, ",")
+	} else {
+		userLang := source.UserLanguage(r)
+		for _, s := range a.Sources {
+			if (userLang & s.Language) != 0 {
+				selected = append(selected, s.ID)
+			}
+		}
+	}
+
 	data := map[string]any{
-		"Strings": translations(r),
-		"Sources": a.Sources,
+		"Strings":  translations(r),
+		"Sources":  a.Sources,
+		"Selected": selected,
 	}
 
 	if err := a.templates.ExecuteTemplate(w, "index.html", data); err != nil {

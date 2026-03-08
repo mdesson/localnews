@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"sync"
 	"time"
 
@@ -118,6 +119,9 @@ func NewApp(sourcesFile string) (*App, error) {
 		},
 		"isBilingual": func(language source.Language) bool {
 			return language == (source.LanguageFrench | source.LanguageEnglish)
+		},
+		"isSelected": func(sourceID string, selectedSources []string) bool {
+			return slices.Contains(selectedSources, sourceID)
 		},
 	}
 
