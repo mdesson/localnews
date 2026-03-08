@@ -4,7 +4,7 @@
         <div>
             <hgroup>
                 <h6><a href="{{ .Link }}">{{ .Title | safe }}</a></h6>
-                <p><a href="{{ $.Source.URL }}" class="plain">{{ $.Source.Name }}</a></p>
+                <p><a href="{{ .SourceURL }}" class="plain">{{ .SourceName }}</a></p>
             </hgroup>
             <p>{{ .Description | safe }}</p>
         </div>

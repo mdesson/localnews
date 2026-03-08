@@ -3,10 +3,12 @@ package source
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/mmcdole/gofeed"
 	"github.com/pemistahl/lingua-go"
 )
@@ -56,10 +58,49 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 			language = s.Language
 		}
 
-		s.Articles[i] = Article{Item: *item, Language: language}
+		// Some items might have pictures in them
+		item.Description = stripImages(item.Description)
+
+		// item.Published isn't always filled in, attempt to get it from elsewhere
+		// On Neomedia this is where it is hidden
+		if item.Published == "" && item.PublishedParsed == nil && item.UpdatedParsed == nil {
+			if a10, ok := item.Extensions["a10"]; ok {
+				if updated, ok := a10["updated"]; ok && len(updated) > 0 {
+					t, err := time.Parse(time.RFC3339, updated[0].Value)
+					if err == nil {
+						item.PublishedParsed = &t
+						item.Published = t.Format(time.RFC1123)
+					}
+				}
+			}
+		}
+
+		// TODO: filter by keyword
+		// vaudreuil, dorion, hawkesbury, soulanges, saint-lazare, trois-lacs, hudson, île-aux-tourtes, ile-aux-tourtes, ile aux tourtes, île-perrot, ile perrot, île-perrot, pincourt, les cedres, les cèdres
+
+		if item.Published == "" {
+			fmt.Println("boop")
+		}
+
+		s.Articles[i] = Article{
+			Item:       *item,
+			Language:   language,
+			SourceName: s.Name,
+			SourceURL:  s.URL,
+		}
 	}
 
 	return nil
+}
+
+func stripImages(html string) string {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		return html
+	}
+	doc.Find("img").Remove()
+	result, _ := doc.Html()
+	return result
 }
 
 // Article contains every piece of information about the article, including the Language.
@@ -67,7 +108,9 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 // The Language is detected intelligently when it is fetched. It's not a property of the rss feed item.
 type Article struct {
 	gofeed.Item
-	Language Language
+	Language   Language
+	SourceName string
+	SourceURL  string
 }
 
 // UserLanguage extracts the user's language from an HTTP request.
