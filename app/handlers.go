@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/mdesson/localnews/source"
@@ -30,21 +31,31 @@ func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) handleArticles(w http.ResponseWriter, r *http.Request) {
-	// get user language
-	userLanguage := source.UserLanguage(r)
-
 	// get all relevant articles
 	var articles []source.Article
-	for _, s := range a.Sources {
-		for _, article := range s.Articles {
-			// TODO: This conditional will remove stuff that might be customer selected
-			if userLanguage == article.Language {
-				articles = append(articles, article)
+	if c, err := r.Cookie("sources"); err == nil {
+		// cookie is set, get articles relevant to cookie
+		selectedSources := strings.Split(c.Value, ",")
+		for _, s := range a.Sources {
+			for _, article := range s.Articles {
+				if slices.Contains(selectedSources, article.SelectedSourceID) {
+					articles = append(articles, article)
+				}
+			}
+		}
+	} else {
+		for _, s := range a.Sources {
+			// not custom languages set, filter on user's language
+			userLanguage := source.UserLanguage(r)
+			for _, article := range s.Articles {
+				if (userLanguage & article.Language) != 0 {
+					articles = append(articles, article)
+				}
 			}
 		}
 	}
 
-	// TODO: sort by date. go into debugger and see what's set on the gofeed item for each source in a.Sources
+	// TODO: sort by date
 
 	data := map[string]any{
 		"Articles": articles,

@@ -23,6 +23,13 @@ const (
 	LanguageFrench
 )
 
+func (l Language) String() string {
+	if l == LanguageEnglish {
+		return "en"
+	}
+	return "fr"
+}
+
 // Source is a news source, including metadata for it, as well as its articles.
 type Source struct {
 	ID       string    `json:"id"`
@@ -78,15 +85,12 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 		// TODO: filter by keyword
 		// vaudreuil, dorion, hawkesbury, soulanges, saint-lazare, trois-lacs, hudson, île-aux-tourtes, ile-aux-tourtes, ile aux tourtes, île-perrot, ile perrot, île-perrot, pincourt, les cedres, les cèdres
 
-		if item.Published == "" {
-			fmt.Println("boop")
-		}
-
 		s.Articles[i] = Article{
-			Item:       *item,
-			Language:   language,
-			SourceName: s.Name,
-			SourceURL:  s.URL,
+			Item:             *item,
+			Language:         language,
+			SourceName:       s.Name,
+			SourceURL:        s.URL,
+			SelectedSourceID: fmt.Sprintf("%s:%s", s.ID, language.String()),
 		}
 	}
 
@@ -119,9 +123,10 @@ func stripImages(html string) string {
 // The Language is detected intelligently when it is fetched. It's not a property of the rss feed item.
 type Article struct {
 	gofeed.Item
-	Language   Language
-	SourceName string
-	SourceURL  string
+	Language         Language
+	SourceName       string
+	SourceURL        string
+	SelectedSourceID string
 }
 
 // UserLanguage extracts the user's language from an HTTP request.
