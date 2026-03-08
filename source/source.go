@@ -93,6 +93,17 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 	return nil
 }
 
+func (s *Source) CheckboxIDs(language Language) []string {
+	var ids []string
+	if (s.Language&LanguageFrench != 0) && (language&LanguageFrench != 0) {
+		ids = append(ids, s.ID+":fr")
+	}
+	if (s.Language&LanguageEnglish != 0) && (language&LanguageEnglish != 0) {
+		ids = append(ids, s.ID+":en")
+	}
+	return ids
+}
+
 func stripImages(html string) string {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 	if err != nil {
@@ -134,7 +145,7 @@ func UserLanguage(r *http.Request) Language {
 	if inputLang == "en" {
 		return LanguageEnglish
 	} else if inputLang == "bi" {
-		return LanguageFrench & LanguageEnglish
+		return LanguageFrench | LanguageEnglish
 	}
 
 	return LanguageFrench

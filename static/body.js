@@ -31,3 +31,13 @@ document.getElementById("language-switcher").addEventListener("change", (e => {
     document.cookie = `lang=${e.target.value};path=/;max-age=31536000`;
     location.reload()
 }))
+
+document.querySelectorAll('input[name="source"]').forEach(el => {
+    el.addEventListener("change", () => {
+        const checked = [...document.querySelectorAll('input[name="source"]:checked')]
+            .map(cb => cb.value)
+            .join(",");
+        document.cookie = `sources=${checked};path=/;max-age=31536000`;
+        htmx.trigger("#articles", "load");
+    });
+});

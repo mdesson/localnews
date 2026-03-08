@@ -14,9 +14,7 @@ func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 	} else {
 		userLang := source.UserLanguage(r)
 		for _, s := range a.Sources {
-			if (userLang & s.Language) != 0 {
-				selected = append(selected, s.ID)
-			}
+			selected = append(selected, s.CheckboxIDs(userLang)...)
 		}
 	}
 
