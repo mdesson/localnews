@@ -5,6 +5,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/goodsign/monday"
 	"github.com/mdesson/localnews/source"
 )
 
@@ -55,7 +56,24 @@ func (a *App) handleArticles(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// TODO: sort by date
+	// sort by date
+	slices.SortFunc(articles, func(a, b source.Article) int {
+		if a.PublishedParsed == nil || b.PublishedParsed == nil {
+			return 0
+		}
+		return b.PublishedParsed.Compare(*a.PublishedParsed)
+	})
+
+	// format date
+	layout := monday.DefaultFormatFrCADateTime
+	locale := monday.LocaleEnUS
+	if source.UserLanguage(r) == source.LanguageEnglish {
+		layout = monday.DefaultFormatEnGBDateTime
+		locale = monday.LocaleEnGB
+	}
+	for i, _ := range articles {
+		articles[i].Published = monday.Format(*articles[i].PublishedParsed, layout, monday.Locale(locale))
+	}
 
 	data := map[string]any{
 		"Articles": articles,
