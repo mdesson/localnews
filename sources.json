@@ -18,7 +18,27 @@
     "name": "Le Journal Saint-François",
     "url": "https://journalsaint-francois.ca",
     "feed_url": "https://journalsaint-francois.ca/feed/",
-    "language": 2
+    "language": 2,
+    "filter": [
+      "vaudreuil",
+      "dorion",
+      "hawkesbury",
+      "soulanges",
+      "saint-lazare",
+      "trois-lacs",
+      "hudson",
+      "île-aux-tourtes",
+      "ile-aux-tourtes",
+      "ile aux tourtes",
+      "île-perrot",
+      "ile perrot",
+      "pincourt",
+      "les cedres",
+      "les cèdres",
+      "vankleek",
+      "montérégie",
+      "monteregie"
+    ]
   },
   {
     "id": "1019-report",
@@ -46,14 +66,54 @@
     "name": "CBC Montreal",
     "url": "https://www.cbc.ca/news/canada/montreal",
     "feed_url": "https://www.cbc.ca/webfeed/rss/rss-canada-montreal",
-    "language": 1
+    "language": 1,
+    "filter": [
+      "vaudreuil",
+      "dorion",
+      "hawkesbury",
+      "soulanges",
+      "saint-lazare",
+      "trois-lacs",
+      "hudson",
+      "île-aux-tourtes",
+      "ile-aux-tourtes",
+      "ile aux tourtes",
+      "île-perrot",
+      "ile perrot",
+      "pincourt",
+      "les cedres",
+      "les cèdres",
+      "vankleek",
+      "montérégie",
+      "monteregie"
+    ]
   },
   {
     "id": "radio-canada",
     "name": "Radio-Canada Grand Montréal",
     "url": "https://ici.radio-canada.ca/nouvelle/grand-montreal",
     "feed_url": "https://ici.radio-canada.ca/info/rss/grandmontreal/en-continu",
-    "language": 2
+    "language": 2,
+    "filter": [
+      "vaudreuil",
+      "dorion",
+      "hawkesbury",
+      "soulanges",
+      "saint-lazare",
+      "trois-lacs",
+      "hudson",
+      "île-aux-tourtes",
+      "ile-aux-tourtes",
+      "ile aux tourtes",
+      "île-perrot",
+      "ile perrot",
+      "pincourt",
+      "les cedres",
+      "les cèdres",
+      "vankleek",
+      "montérégie",
+      "monteregie"
+    ]
   },
   {
     "id": "la-voix",
@@ -68,13 +128,6 @@
     "url": "https://www.yourlocaljournal.ca",
     "feed_url": "",
     "language": 1
-  },
-  {
-    "id": "ckvd",
-    "name": "CKVD-FM 100.1",
-    "url": "https://ckvdfm.com",
-    "feed_url": "",
-    "language": 2
   },
   {
     "id": "ville-vd",

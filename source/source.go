@@ -83,7 +83,7 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 		}
 
 		// TODO: filter by keyword
-		// vaudreuil, dorion, hawkesbury, soulanges, saint-lazare, trois-lacs, hudson, île-aux-tourtes, ile-aux-tourtes, ile aux tourtes, île-perrot, ile perrot, île-perrot, pincourt, les cedres, les cèdres
+		// vaudreuil, dorion, hawkesbury, soulanges, saint-lazare, trois-lacs, hudson, île-aux-tourtes, ile-aux-tourtes, ile aux tourtes, île-perrot, ile perrot, île-perrot, pincourt, les cedres, les cèdres, vankleek, montérégie, monteregie
 
 		s.Articles[i] = Article{
 			Item:             *item,
