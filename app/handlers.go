@@ -20,9 +20,16 @@ func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var nonEmptySources []*source.Source
+	for _, i := range a.Sources {
+		if len(i.Articles) != 0 {
+			nonEmptySources = append(nonEmptySources, i)
+		}
+	}
+
 	data := map[string]any{
 		"Strings":  translations(r),
-		"Sources":  a.Sources,
+		"Sources":  nonEmptySources,
 		"Selected": selected,
 	}
 

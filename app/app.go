@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"log/slog"
@@ -74,8 +75,14 @@ func (a *App) Update() {
 			wg.Add(1)
 			defer wg.Done()
 			if err := s.FetchArticles(a.languageDetector); err != nil {
+				if errors.Is(err, source.ErrorNoFeedURL) {
+					a.l.Warn("source has no feed", "source", s.Name)
+				}
 				a.l.Error("error updating source", "source", s.Name, "error", err.Error())
 			} else {
+				if len(s.Articles) == 0 {
+					a.l.Warn("empty feed", "source", s.Name)
+				}
 				a.l.Info("updated source", "source", s.Name)
 			}
 		}()

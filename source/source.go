@@ -13,6 +13,10 @@ import (
 	"github.com/pemistahl/lingua-go"
 )
 
+var (
+	ErrorNoFeedURL = errors.New("no feed url")
+)
+
 // Language is exactly what it sounds like. However, because it's implemented as a bitmask, it supports multilingualism.
 //
 // For example, `LanguageEnglish|LanguageFrench` means something is bilingual.
@@ -45,7 +49,7 @@ type Source struct {
 func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 	fp := gofeed.NewParser()
 	if s.FeedURL == "" {
-		return errors.New("no feed url")
+		return ErrorNoFeedURL
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
