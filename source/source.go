@@ -55,8 +55,25 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 		return err
 	}
 
-	s.Articles = make([]Article, len(feed.Items))
-	for i, item := range feed.Items {
+	s.Articles = make([]Article, 0, len(feed.Items))
+	for _, item := range feed.Items {
+		// enforce source's filter
+		if s.Filter != nil {
+			skip := true
+			titleLower := strings.ToLower(item.Title)
+			descLower := strings.ToLower(item.Description)
+			for _, keyword := range s.Filter {
+				if strings.Contains(titleLower, keyword) || strings.Contains(descLower, keyword) {
+					skip = false
+					break
+				}
+			}
+			if skip {
+				continue
+			}
+		}
+
+		// get article language
 		language := LanguageFrench
 		linguaLang, detected := detector.DetectLanguageOf(item.Title)
 		if linguaLang == lingua.English {
@@ -82,16 +99,13 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 			}
 		}
 
-		// TODO: filter by keyword
-		// vaudreuil, dorion, hawkesbury, soulanges, saint-lazare, trois-lacs, hudson, île-aux-tourtes, ile-aux-tourtes, ile aux tourtes, île-perrot, ile perrot, île-perrot, pincourt, les cedres, les cèdres, vankleek, montérégie, monteregie
-
-		s.Articles[i] = Article{
+		s.Articles = append(s.Articles, Article{
 			Item:             *item,
 			Language:         language,
 			SourceName:       s.Name,
 			SourceURL:        s.URL,
 			SelectedSourceID: fmt.Sprintf("%s:%s", s.ID, language.String()),
-		}
+		})
 	}
 
 	return nil
