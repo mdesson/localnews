@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strconv"
 	"sync"
 	"time"
 
@@ -18,11 +19,12 @@ import (
 )
 
 const (
-	PORT = 8080
+	DEFAULT_PORT int = 443
 )
 
 type App struct {
 	l                *slog.Logger
+	Port             int
 	Sources          []*source.Source
 	LastUpdated      time.Time
 	templates        *template.Template
@@ -56,8 +58,8 @@ func (a *App) Start(staticFolder embed.FS) {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFolder))))
 
 	// start web server
-	a.l.Info("starting server", "port", PORT)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", PORT), nil); err != nil {
+	a.l.Info("starting server", "port", a.Port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", a.Port), nil); err != nil {
 		a.l.Error("server failed", "error", err)
 		os.Exit(1)
 	}
@@ -108,6 +110,16 @@ func NewApp(sourcesBytes []byte, templatesFolder embed.FS) (*App, error) {
 	logHandler := slog.NewJSONHandler(os.Stdout, nil)
 	logger := slog.New(logHandler)
 
+	// select port or fall back to HTTPS default
+	port := DEFAULT_PORT
+	if portStr, portSet := os.LookupEnv("PORT"); portSet {
+		portInt, err := strconv.Atoi(portStr)
+		if err != nil {
+			return nil, err
+		}
+		port = portInt
+	}
+
 	// load sources from embedded json files
 	sources := make([]*source.Source, 0)
 	if err := json.Unmarshal(sourcesBytes, &sources); err != nil {
@@ -141,7 +153,7 @@ func NewApp(sourcesBytes []byte, templatesFolder embed.FS) (*App, error) {
 	detector := lingua.NewLanguageDetectorBuilder().FromLanguages(lingua.English, lingua.French).WithPreloadedLanguageModels().Build()
 
 	// initialize app and update sources
-	app := &App{Sources: sources, l: logger, templates: templates, languageDetector: detector}
+	app := &App{Port: port, Sources: sources, l: logger, templates: templates, languageDetector: detector}
 	app.l.Info("starting update")
 	app.Update()
 	app.l.Info("finished update")
