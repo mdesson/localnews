@@ -1,6 +1,7 @@
 package app
 
 import (
+	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -29,7 +30,7 @@ type App struct {
 }
 
 // Start kicks off a background process that refreshes the article list every minute and starts the web server.
-func (a *App) Start() {
+func (a *App) Start(staticFolder embed.FS) {
 	// update news every minute
 	ticker := time.NewTicker(time.Minute)
 	done := make(chan bool)
@@ -52,7 +53,7 @@ func (a *App) Start() {
 	// config web server
 	http.HandleFunc("/", a.handleIndex)
 	http.HandleFunc("/articles", a.handleArticles)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFolder))))
 
 	// start web server
 	a.l.Info("starting server", "port", PORT)
@@ -102,22 +103,17 @@ func (a *App) Update() {
 //
 // Note that fetching articles will not cause it to fail, since a single failing source should not cause every update to
 // fail.
-func NewApp(sourcesFile string) (*App, error) {
+func NewApp(sourcesBytes []byte, templatesFolder embed.FS) (*App, error) {
 	// init logger
 	logHandler := slog.NewJSONHandler(os.Stdout, nil)
 	logger := slog.New(logHandler)
 
-	// load sources from json
-	sourcesBytes, err := os.ReadFile(sourcesFile)
-	if err != nil {
-		return nil, err
-	}
-
+	// load sources from embedded json files
 	sources := make([]*source.Source, 0)
 	if err := json.Unmarshal(sourcesBytes, &sources); err != nil {
 		return nil, err
 	}
-	logger.Info("loaded sources from json", "sourcesFile", sourcesFile)
+	logger.Info("loaded sources from embedded json")
 
 	// load templates
 	funcMap := template.FuncMap{
@@ -139,7 +135,7 @@ func NewApp(sourcesFile string) (*App, error) {
 	}
 
 	templates := template.Must(
-		template.New("").Funcs(funcMap).ParseGlob("templates/*.html"),
+		template.New("").Funcs(funcMap).ParseFS(templatesFolder, "templates/*.html"),
 	)
 	// init language detector
 	detector := lingua.NewLanguageDetectorBuilder().FromLanguages(lingua.English, lingua.French).WithPreloadedLanguageModels().Build()
