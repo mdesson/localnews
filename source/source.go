@@ -66,8 +66,10 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 			skip := true
 			titleLower := strings.ToLower(item.Title)
 			descLower := strings.ToLower(item.Description)
+			contentLower := strings.ToLower(item.Content)
 			for _, keyword := range s.Filter {
-				if strings.Contains(titleLower, keyword) || strings.Contains(descLower, keyword) {
+				keywordLower := strings.ToLower(keyword)
+				if strings.Contains(titleLower, keywordLower) || strings.Contains(descLower, keywordLower) || strings.Contains(contentLower, keywordLower) {
 					skip = false
 					break
 				}
