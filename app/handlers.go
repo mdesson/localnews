@@ -32,12 +32,20 @@ func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) handleArticles(w http.ResponseWriter, r *http.Request) {
+	// filter out sources that have errors on fetch
+	sources := make([]*source.Source, 0)
+	for _, s := range a.Sources {
+		if !s.ErrorOnUpdate {
+			sources = append(sources, s)
+		}
+	}
+
 	// get all relevant articles
 	var articles []source.Article
 	if c, err := r.Cookie("sources"); err == nil {
 		// cookie is set, get articles relevant to cookie
 		selectedSources := strings.Split(c.Value, ",")
-		for _, s := range a.Sources {
+		for _, s := range sources {
 			for _, article := range s.Articles {
 				if slices.Contains(selectedSources, article.SelectedSourceID) {
 					articles = append(articles, article)
@@ -45,7 +53,7 @@ func (a *App) handleArticles(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		for _, s := range a.Sources {
+		for _, s := range sources {
 			// not custom languages set, filter on user's language
 			userLanguage := source.UserLanguage(r)
 			for _, article := range s.Articles {

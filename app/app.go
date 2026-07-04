@@ -74,7 +74,10 @@ func (a *App) Update() {
 		go func() {
 			wg.Add(1)
 			defer wg.Done()
-			if err := s.FetchArticles(a.languageDetector); err != nil {
+			// Fetch the article, log out errors
+			err := s.FetchArticles(a.languageDetector)
+
+			if err != nil {
 				if errors.Is(err, source.ErrorNoFeedURL) {
 					a.l.Warn("source has no feed", "source", s.Name)
 				}
@@ -85,6 +88,9 @@ func (a *App) Update() {
 				}
 				a.l.Info("updated source", "source", s.Name)
 			}
+
+			// Set the error status on it so it won't display on frontend
+			s.ErrorOnUpdate = err != nil
 		}()
 	}
 	wg.Wait()

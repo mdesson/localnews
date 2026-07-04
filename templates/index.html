@@ -48,11 +48,12 @@
             <div>
                 <h6>{{ .Strings.LanguageFrench }}</h6>
                 {{ range .Sources }}
+                    {{ if .ErrorOnUpdate }}{{ continue }}{{ end }}
                     {{if .Language | isFrench}}
                     <label>
                         <input type="checkbox" name="source" value="{{.ID}}:fr" {{ if isSelected (printf "%s:fr" .ID) $.Selected }}checked{{ end }}>
                         {{ .Name }}
-                        {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageFrench }})</span>{{ end }}
+                        {{ if isBilingual .Language }} <span class="muted">(articles {{ $.Strings.LanguageFrench }})</span>{{ end }}
                     </label>
                     {{end}}
                 {{ end }}
@@ -60,11 +61,12 @@
             <div>
                 <h6>{{ .Strings.LanguageEnglish }}</h6>
                 {{ range .Sources }}
-                    {{if .Language | isEnglish}}
+                {{ if .ErrorOnUpdate }}{{ continue }}{{ end }}
+                {{if .Language | isEnglish}}
                     <label>
                         <input type="checkbox" name="source" value="{{.ID}}:en" {{ if isSelected (printf "%s:en" .ID) $.Selected }}checked{{ end }}>
                         {{ .Name }}
-                        {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageEnglish }})</span>{{ end }}
+                        {{ if isBilingual .Language }} <span class="muted">({{ $.Strings.LanguageEnglish }} articles)</span>{{ end }}
                     </label>
                     {{end}}
                 {{ end }}

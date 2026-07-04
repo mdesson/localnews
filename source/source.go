@@ -36,13 +36,14 @@ func (l Language) String() string {
 
 // Source is a news source, including metadata for it, as well as its articles.
 type Source struct {
-	ID       string    `json:"id"`
-	Name     string    `json:"name"`
-	URL      string    `json:"url"`
-	FeedURL  string    `json:"feed_url"`
-	Filter   []string  `json:"filter,omitempty"`
-	Language Language  `json:"language"`
-	Articles []Article `json:"articles,omitempty"`
+	ID            string    `json:"id"`
+	Name          string    `json:"name"`
+	URL           string    `json:"url"`
+	FeedURL       string    `json:"feed_url"`
+	Filter        []string  `json:"filter,omitempty"`
+	Language      Language  `json:"language"`
+	Articles      []Article `json:"articles,omitempty"`
+	ErrorOnUpdate bool
 }
 
 // FetchArticles refreshes the Articles on the Source, replacing them entirely.
