@@ -10,11 +10,12 @@ import (
 )
 
 func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
+	userLang := source.UserLanguage(r)
+
 	var selected []string
 	if c, err := r.Cookie("sources"); err == nil {
 		selected = strings.Split(c.Value, ",")
 	} else {
-		userLang := source.UserLanguage(r)
 		for _, s := range a.Sources {
 			selected = append(selected, s.CheckboxIDs(userLang)...)
 		}
@@ -24,6 +25,7 @@ func (a *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 		"Strings":  translations(r),
 		"Sources":  a.Sources,
 		"Selected": selected,
+		"Lang":     userLang.String(),
 	}
 
 	if err := a.templates.ExecuteTemplate(w, "index.html", data); err != nil {
