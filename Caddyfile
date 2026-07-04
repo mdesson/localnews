@@ -1,0 +1,3 @@
+vaudreuil.news, www.vaudreuil.news {
+	reverse_proxy localhost:8080
+}

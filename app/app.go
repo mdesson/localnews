@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	DEFAULT_PORT int = 443
+	DEFAULT_PORT int = 8080
 )
 
 type App struct {
@@ -55,7 +55,7 @@ func (a *App) Start(staticFolder embed.FS) {
 	// config web server
 	http.HandleFunc("/", a.handleIndex)
 	http.HandleFunc("/articles", a.handleArticles)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFolder))))
+	http.Handle("/static/", http.FileServer(http.FS(staticFolder)))
 
 	// start web server
 	a.l.Info("starting server", "port", a.Port)
