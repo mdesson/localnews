@@ -47,8 +47,12 @@ type Source struct {
 }
 
 // FetchArticles refreshes the Articles on the Source, replacing them entirely.
-func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
+func (s *Source) FetchArticles(detector lingua.LanguageDetector, userAgent string) error {
 	fp := gofeed.NewParser()
+	if userAgent != "" {
+		fp.UserAgent = userAgent
+	}
+
 	if s.FeedURL == "" {
 		return ErrorNoFeedURL
 	}

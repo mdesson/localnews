@@ -25,6 +25,7 @@ const (
 type App struct {
 	l                *slog.Logger
 	Port             int
+	UserAgent        string
 	Sources          []*source.Source
 	LastUpdated      time.Time
 	templates        *template.Template
@@ -78,7 +79,7 @@ func (a *App) Update() {
 			wg.Add(1)
 			defer wg.Done()
 			// Fetch the article, log out errors
-			err := s.FetchArticles(a.languageDetector)
+			err := s.FetchArticles(a.languageDetector, a.UserAgent)
 
 			if err != nil {
 				if errors.Is(err, source.ErrorNoFeedURL) {
@@ -112,12 +113,19 @@ func NewApp(sourcesBytes []byte, templatesFolder embed.FS) (*App, error) {
 
 	// select port or fall back to HTTPS default
 	port := DEFAULT_PORT
-	if portStr, portSet := os.LookupEnv("PORT"); portSet {
+	if portStr, ok := os.LookupEnv("PORT"); ok {
 		portInt, err := strconv.Atoi(portStr)
 		if err != nil {
 			return nil, err
 		}
 		port = portInt
+	}
+
+	// set user agent
+	userAgent := ""
+	if ua, ok := os.LookupEnv("USER_AGENT"); ok {
+		userAgent = ua
+		logger.Info("setting custom user agent", "userAgent", userAgent)
 	}
 
 	// load sources from embedded json files
@@ -153,7 +161,7 @@ func NewApp(sourcesBytes []byte, templatesFolder embed.FS) (*App, error) {
 	detector := lingua.NewLanguageDetectorBuilder().FromLanguages(lingua.English, lingua.French).WithPreloadedLanguageModels().Build()
 
 	// initialize app and update sources
-	app := &App{Port: port, Sources: sources, l: logger, templates: templates, languageDetector: detector}
+	app := &App{Port: port, UserAgent: userAgent, Sources: sources, l: logger, templates: templates, languageDetector: detector}
 	app.l.Info("starting update")
 	app.Update()
 	app.l.Info("finished update")
