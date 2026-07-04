@@ -1,10 +1,12 @@
 package source
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -47,11 +49,8 @@ type Source struct {
 }
 
 // FetchArticles refreshes the Articles on the Source, replacing them entirely.
-func (s *Source) FetchArticles(detector lingua.LanguageDetector, userAgent string) error {
+func (s *Source) FetchArticles(detector lingua.LanguageDetector) error {
 	fp := gofeed.NewParser()
-	if userAgent != "" {
-		fp.UserAgent = userAgent
-	}
 
 	if s.FeedURL == "" {
 		return ErrorNoFeedURL
@@ -59,7 +58,19 @@ func (s *Source) FetchArticles(detector lingua.LanguageDetector, userAgent strin
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	feed, err := fp.ParseURLWithContext(s.FeedURL, ctx)
+
+	// Some CDNs (e.g. in front of cbc.ca) fingerprint and block Go's native TLS client
+	// while allowing curl through. Shell out to curl, which we've confirmed works, rather
+	// than letting gofeed make the request itself.
+	args := []string{"-s", "--max-time", "25"}
+	args = append(args, s.FeedURL)
+
+	body, err := exec.CommandContext(ctx, "curl", args...).Output()
+	if err != nil {
+		return err
+	}
+
+	feed, err := fp.Parse(bytes.NewReader(body))
 	if err != nil {
 		return err
 	}

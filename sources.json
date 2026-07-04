@@ -65,7 +65,7 @@
     "id": "cbc",
     "name": "CBC Montreal",
     "url": "https://www.cbc.ca/news/canada/montreal",
-    "feed_url": "https://www.cbc.ca/webfeed/rss/rss-canada-montreal",
+    "feed_url": "https://rss.cbc.ca/lineup/canada-montreal.xml",
     "language": 1,
     "filter": [
       "vaudreuil",
