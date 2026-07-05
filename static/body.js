@@ -43,9 +43,6 @@ document.querySelectorAll('input[name="source"]').forEach(el => {
 });
 
 document.querySelectorAll('input[name="source"]').forEach(el => {
-    console.log("attached listener to", el.value);
     el.addEventListener("change", () => {
-        console.log("checkbox changed", el.value);
-        // ...
     });
 });
