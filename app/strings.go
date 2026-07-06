@@ -14,7 +14,7 @@ var STRINGS = map[string]Translation{
 	},
 	"Subtitle": {
 		English: "Local news shouldn't be hard to find.",
-		French:  "Les nouvelles locales ne devraient pas être difficiles à trouver.",
+		French:  "L'actualité locale devrait être facile à trouver.",
 	},
 	"ThemeLight": {
 		English: "Light",
